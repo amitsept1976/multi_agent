@@ -24,6 +24,8 @@ from langchain_core.tracers.context import register_configure_hook
 # Use lazy loading of types to avoid dependency bloat for stuff most people don't need.
 from leaf_common.config.resolver_util import ResolverUtil
 
+from plugins.base_plugin import BasePlugin
+
 
 class LangfusePlugin:
     """
@@ -181,3 +183,16 @@ class LangfusePlugin:
             print("[Langfuse] Shutdown complete")
         except Exception as exc:  # pylint: disable=broad-exception-caught
             self._logger.warning("Failed to shutdown Langfuse cleanly: %s", exc)
+
+
+class LangfuseStudioPlugin(LangfusePlugin, BasePlugin):
+    """Studio plugin that integrates Langfuse for tracing and monitoring."""
+
+    def __init__(self):
+        """Initialize the Langfuse Studio plugin."""
+        LangfusePlugin.__init__(self)
+        BasePlugin.__init__(self, "LangfuseStudio")
+
+    def cleanup(self):
+        """Cleanup and shutdown the Langfuse plugin."""
+        return self.shutdown()
